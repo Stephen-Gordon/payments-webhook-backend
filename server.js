@@ -6,11 +6,18 @@ const fetch = require('node-fetch');
 
 // start the express server with the appropriate routes for our webhook and web requests
 var app = express()
-  .use(express.static(path.join(__dirname, 'public')))
-  .use(express.json())
-  .post('/alchemyhook', (req, res) => { notificationReceived(req); res.status(200).end() })
-  .get('/*', (req, res) => res.sendFile(path.join(__dirname + '/index.html')))
-  .listen(PORT, () => console.log(`Listening on ${PORT}`))
+	.use(express.static(path.join(__dirname, "public")))
+	.use(express.json())
+	.post("/alchemyhook", (req, res) => {
+		notificationReceived(req);
+		res.status(200).end();
+	})
+	.post("/send", (req, res) => {
+		notificationReceived(req);
+		res.status(200).end();
+	})
+	.get("/*", (req, res) => res.sendFile(path.join(__dirname + "/index.html")))
+	.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 // start the websocket server
 const io = socketIO(app);
@@ -26,8 +33,24 @@ io.on('connection', (socket) => {
 });
 
 // notification received from Alchemy from the webhook. Let the clients know.
-function notificationReceived(req) {
+const notificationReceived = async (req, res) => {
   console.log("notification received!");
+  console.log(req.body);
+  try {
+    await fetch("https://payments-lyart.vercel.app/notification", {
+			method: "POST",
+			headers: {
+				"Content-type": "application/json",
+			},
+			body: JSON.stringify({
+        title: 'Hello Web Push from aheroku',
+        message: 'Heroku Your web push notification is here from heroku!',
+      }),
+			signal: AbortSignal.timeout(10000),
+		});
+  } catch (error) {
+    console.error(error);
+  }
   io.emit('notification', JSON.stringify(req.body));
 }
 
