@@ -35,8 +35,9 @@ io.on('connection', (socket) => {
 // notification received from Alchemy from the webhook. Let the clients know.
 const notificationReceived = async (req, res) => {
   console.log("notification received!");
-  console.log(req.body);
- 
+  console.log("event hereeeeeeeeee", req.body.event.activity[0].toAddress);
+
+  sendNoti(req, res); 
   io.emit('notification', JSON.stringify(req.body));
 
 }
@@ -66,10 +67,10 @@ const sendNoti = async (req, res) => {
 
  
 const sendPushNotification = async () => {
-  console.log("sending notification");
-	/* const publicKey =
-    'BK9FZUL3u5bgvs8NlurUeFesIq5dm3qEUwOlh3hL7wGPbNec2SELGLwjKU2jWv9P9GULDvlWlC04Lric-w8yEf8';
-  const privateKey = 'EctJtRAxWnq18ayGbnjcHQ'; */
+  
+
+  
+
 	const publicKey =
 		"BKIvDJTEdSWEOc3P_-QtcaNhcBYbpESr6KXM2S7oCmlnkdgwAz1wHn8T17OZDrpkDw5GkfiHwrePpgzh55e4Qt4";
 	const privateKey = "5Lys2yFtv71OQnusHfZNNQ";
