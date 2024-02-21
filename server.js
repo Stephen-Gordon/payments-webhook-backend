@@ -12,10 +12,6 @@ var app = express()
 		notificationReceived(req);
 		res.status(200).end();
 	})
-	.get("/noti", (req, res) => {
-		sendNoti(req);
-		res.status(200).end();
-	})
 	.get("/*", (req, res) => res.sendFile(path.join(__dirname + "/index.html")))
 	.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
@@ -35,7 +31,7 @@ io.on('connection', (socket) => {
 // notification received from Alchemy from the webhook. Let the clients know.
 const notificationReceived = async (req, res) => {
   console.log("notification received!");
-  console.log("event hereeeeeeeeee", req.body.event.activity[0].toAddress);
+  console.log("event hereeeeeeeeee", req?.body?.event?.activity[0]?.toAddress);
 
   sendNoti(req, res); 
   io.emit('notification', JSON.stringify(req.body));
@@ -61,57 +57,3 @@ async function addAddress(new_address) {
     console.error(err);
   }
 }
-
-
-const sendNoti = async (req, res) => {
-
- 
-const sendPushNotification = async () => {
-  
-
-  
-
-	const publicKey =
-		"BKIvDJTEdSWEOc3P_-QtcaNhcBYbpESr6KXM2S7oCmlnkdgwAz1wHn8T17OZDrpkDw5GkfiHwrePpgzh55e4Qt4";
-	const privateKey = "5Lys2yFtv71OQnusHfZNNQ";
-	/* webPush.setVapidDetails(
-    'mailto:example@yourdomain.org',
-    publicKey,
-    privateKey
-  ); */
-	const pushSubscription = {
-		endpoint:
-			"https://fcm.googleapis.com/fcm/send/cFpbxV7KLYc:APA91bHFlDQI1HYpYr7NMl2Y67B6WtjQRcejgewG1jhRPeJWR3wrIgIrYpWgkv8tOMsPUmAJcFHsB3up8EvpVWjfntCnir34fE827JK8u56fQ2FSmE8dhWZva21_lu08SxO2UUXjtSLf",
-		expirationTime: Math.floor(Date.now() / 1000) + 10,
-
-		keys: {
-			auth: privateKey,
-			p256dh: publicKey,
-		},
-	};
-	/*  const response = await webPush.sendNotification(
-    pushSubscription,
-    JSON.stringify({
-      title: 'Hello from script',
-      message: 'Your web push notification is here!',
-    })
-  ); */
-	console.log(pushSubscription);
-	try {
-		await fetch("https://payments-lyart.vercel.app/notification", {
-			method: "POST",
-			headers: {
-				"Content-type": "application/json",
-			},
-			body: JSON.stringify({
-				subscription: pushSubscription,
-				message: "Hello from ste",
-			}),
-		});
-	} catch (error) {
-		console.log(error);
-	}
-};
-
-sendPushNotification();
-};
