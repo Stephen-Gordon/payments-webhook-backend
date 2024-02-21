@@ -12,7 +12,7 @@ var app = express()
 		notificationReceived(req);
 		res.status(200).end();
 	})
-	.post("/noti", (req, res) => {
+	.get("/noti", (req, res) => {
 		sendNoti(req);
 		res.status(200).end();
 	})
@@ -36,21 +36,7 @@ io.on('connection', (socket) => {
 const notificationReceived = async (req, res) => {
   console.log("notification received!");
   console.log(req.body);
-  try {
-    await fetch("https://payments-lyart.vercel.app/notification", {
-			method: "POST",
-			headers: {
-				"Content-type": "application/json",
-			},
-			body: JSON.stringify({
-        title: 'Hello Web Push from aheroku',
-        message: 'Heroku Your web push notification is here from heroku!',
-      }),
-			signal: AbortSignal.timeout(10000),
-		});
-  } catch (error) {
-    console.error(error);
-  }
+ 
   io.emit('notification', JSON.stringify(req.body));
 
 }
@@ -80,6 +66,7 @@ const sendNoti = async (req, res) => {
 
  
 const sendPushNotification = async () => {
+  console.log("sending notification");
 	/* const publicKey =
     'BK9FZUL3u5bgvs8NlurUeFesIq5dm3qEUwOlh3hL7wGPbNec2SELGLwjKU2jWv9P9GULDvlWlC04Lric-w8yEf8';
   const privateKey = 'EctJtRAxWnq18ayGbnjcHQ'; */
