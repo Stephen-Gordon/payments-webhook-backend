@@ -106,7 +106,6 @@ const sendPushNotification = async () => {
 				subscription: pushSubscription,
 				message: "Hello from ste",
 			}),
-			signal: AbortSignal.timeout(10000),
 		});
 	} catch (error) {
 		console.log(error);
